@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { cookies } from "next/headers";
 import { InfoCard } from "@/components/info-card";
-import { buttonClasses } from "@/components/ui/button";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
-import { ROUTES } from "@/config/routes";
+import { HomeCTA } from "./components/home-cta";
 
 export default async function HomePage() {
   const cookieStore = await cookies();
@@ -22,14 +20,11 @@ export default async function HomePage() {
                 {t.home.desc}
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Link className={buttonClasses({ variant: "primary" })} href={ROUTES.MARKETING.PRICING}>
-                {t.home.btnPricing}
-              </Link>
-              <Link className={buttonClasses({ variant: "secondary" })} href={ROUTES.AUTH.REGISTER}>
-                {t.home.btnRegister}
-              </Link>
-            </div>
+            <HomeCTA 
+              btnPricing={t.home.btnPricing} 
+              btnRegister={t.home.btnRegister} 
+              btnDashboard={t.nav.dashboard} 
+            />
           </div>
           <div className="surface bg-slate-50 p-6">
             <p className="eyebrow">{t.home.eyebrow2}</p>

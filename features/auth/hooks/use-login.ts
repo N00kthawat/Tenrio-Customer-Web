@@ -4,9 +4,11 @@ import { AuthService } from "@/services/auth/auth.service";
 import { loginSchema } from "../auth.schema";
 import { useTranslation } from "@/lib/i18n/I18nProvider";
 import { ROUTES } from "@/config/routes";
+import { useAuth } from "@/providers/auth-provider";
 
 export function useLogin() {
   const router = useRouter();
+  const { checkAuth } = useAuth();
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +34,7 @@ export function useLogin() {
     setIsLoading(true);
     try {
       await AuthService.login({ email, password });
-      await AuthService.getCurrentUser();
+      await checkAuth();
       router.push(ROUTES.DASHBOARD.HOME);
     } catch (err: unknown) {
       setIsLoading(false);

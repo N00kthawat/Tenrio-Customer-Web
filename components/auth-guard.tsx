@@ -1,37 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { AuthService } from "@/services/auth/auth.service";
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/providers/auth-provider";
 import { useTranslation } from "@/lib/i18n/I18nProvider";
 import { ROUTES } from "@/config/routes";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const { t } = useTranslation();
 
   useEffect(() => {
-    let isMounted = true;
-    async function checkAuth() {
-      try {
-        await AuthService.getCurrentUser();
-        if (!isMounted) return;
-        setIsAuthenticated(true);
-      } catch {
-        if (!isMounted) return;
-        // Safely redirect to login on backend failure to prevent exposing content or crashing
-        router.replace(ROUTES.AUTH.LOGIN);
-      }
+    if (!isLoading && !isAuthenticated) {
+      router.replace(ROUTES.AUTH.LOGIN);
     }
+  }, [isLoading, isAuthenticated, router, pathname]);
 
-    checkAuth();
-    return () => { isMounted = false; };
-  }, [router]);
-
-  if (!isAuthenticated) {
+  if (isLoading || !isAuthenticated) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
+      <div className="flex h-screen w-full items-center justify-center bg-white">
         <div 
           className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" 
           aria-label={t("auth.verify.verifying")}
@@ -42,3 +31,4 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
+

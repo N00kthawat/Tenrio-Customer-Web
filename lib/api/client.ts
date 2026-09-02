@@ -40,7 +40,12 @@ export async function fetchApi<T>(endpoint: string, options: RequestOptions = {}
       return {} as T;
     }
 
-    return (await response.json()) as T;
+    const text = await response.text();
+    if (!text) {
+      return {} as T;
+    }
+    
+    return JSON.parse(text) as T;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
