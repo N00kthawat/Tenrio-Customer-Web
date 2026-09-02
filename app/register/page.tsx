@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FormError } from "@/components/ui/form-error";
+import { AuthService } from "@/services/auth/auth.service";
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,23 +42,11 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const res = await fetch(`${apiUrl}/v1/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        // Safe error handling
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || "ไม่สามารถสร้างบัญชีได้ในขณะนี้ โปรดลองใหม่อีกครั้ง");
-      }
-
+      await AuthService.register({ email, password });
       setIsSuccess(true);
     } catch (err: unknown) {
+      setIsLoading(false);
+      
       if (err instanceof Error) {
         setError(err.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองใหม่อีกครั้ง");
       } else {

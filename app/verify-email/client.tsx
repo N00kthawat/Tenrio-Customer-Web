@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Alert } from "@/components/ui/alert";
 import { buttonClasses } from "@/components/ui/button";
+import { AuthService } from "@/services/auth/auth.service";
 
 type Status = "verifying" | "success" | "invalid" | "expired" | "used" | "unavailable" | "error" | "missing_token";
 
@@ -22,40 +23,18 @@ export function VerifyEmailClient({ token }: { token?: string }) {
 
     async function verifyToken() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiUrl}/v1/auth/verify-email`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token }),
-        });
-
-        if (res.ok) {
-          setStatus("success");
-          return;
-        }
-
-        const data = await res.json().catch(() => ({}));
-        const errorMessage = String(data.message || "").toLowerCase();
-        const errorCode = String(data.code || "").toLowerCase();
-
-        if (res.status === 400 || res.status === 401 || res.status === 403 || res.status === 422) {
-          if (errorMessage.includes("expire") || errorCode.includes("expire")) {
-            setStatus("expired");
-          } else if (errorMessage.includes("used") || errorMessage.includes("already") || errorCode.includes("used")) {
-            setStatus("used");
-          } else {
-            setStatus("invalid");
+        await AuthService.verifyEmail({ token: token as string });
+        setStatus("success");
+      } catch (err) {
+        if (err instanceof Error) {
+          switch (err.message) {
+            case "expired": return setStatus("expired");
+            case "used": return setStatus("used");
+            case "invalid": return setStatus("invalid");
+            case "unavailable": return setStatus("unavailable");
+            default: return setStatus("error");
           }
-        } else if (res.status === 409) {
-          setStatus("used");
-        } else if (res.status >= 500) {
-          setStatus("unavailable");
-        } else {
-          setStatus("error");
         }
-      } catch {
         setStatus("unavailable");
       }
     }

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FormError } from "@/components/ui/form-error";
+import { AuthService } from "@/services/auth/auth.service";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,40 +44,8 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      
-      const loginRes = await fetch(`${apiUrl}/v1/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
-
-      if (!loginRes.ok) {
-        const data = await loginRes.json().catch(() => ({}));
-        const errorMessage = String(data.message || "").toLowerCase();
-        const errorCode = String(data.code || "").toLowerCase();
-
-        if (errorMessage.includes("verify") || errorMessage.includes("unverified") || errorCode.includes("verify")) {
-          throw new Error("unverified");
-        }
-        throw new Error("invalid");
-      }
-
-      const meRes = await fetch(`${apiUrl}/v1/auth/me`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!meRes.ok) {
-        throw new Error("session_failed");
-      }
-
+      await AuthService.login({ email, password });
+      await AuthService.getCurrentUser();
       router.push("/dashboard");
     } catch (err: unknown) {
       setIsLoading(false);

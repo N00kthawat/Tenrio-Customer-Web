@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button, buttonClasses } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FormError } from "@/components/ui/form-error";
+import { AuthService } from "@/services/auth/auth.service";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -28,22 +29,7 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      
-      const res = await fetch(`${apiUrl}/v1/auth/forgot-password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      // To prevent email enumeration, we show success regardless of the response.
-      // However, if it's a hard 500 error, we might want to show a generic connection error.
-      if (!res.ok && res.status >= 500) {
-        throw new Error("server_error");
-      }
-
+      await AuthService.forgotPassword({ email });
       setIsSuccess(true);
     } catch {
       setIsLoading(false);

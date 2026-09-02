@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button, buttonClasses } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FormError } from "@/components/ui/form-error";
+import { AuthService } from "@/services/auth/auth.service";
 
 export function ResetPasswordClient({ token }: { token?: string }) {
   const [password, setPassword] = useState("");
@@ -56,34 +57,7 @@ export function ResetPasswordClient({ token }: { token?: string }) {
     setIsLoading(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      
-      const res = await fetch(`${apiUrl}/v1/auth/reset-password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token, password }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        const errorMessage = String(data.message || "").toLowerCase();
-        const errorCode = String(data.code || "").toLowerCase();
-
-        if (res.status === 400 || res.status === 401 || res.status === 403 || res.status === 422) {
-          if (errorMessage.includes("expire") || errorCode.includes("expire")) {
-            throw new Error("expired");
-          } else if (errorMessage.includes("used") || errorMessage.includes("already") || errorCode.includes("used")) {
-            throw new Error("used");
-          } else {
-            throw new Error("invalid");
-          }
-        }
-        
-        throw new Error("server_error");
-      }
-
+      await AuthService.resetPassword({ token, password });
       setIsSuccess(true);
     } catch (err: unknown) {
       setIsLoading(false);
