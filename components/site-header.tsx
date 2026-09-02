@@ -8,6 +8,7 @@ import { ROUTES } from "@/config/routes";
 import { buttonClasses } from "@/components/ui/button";
 import { useAuth } from "@/providers/auth-provider";
 import { AccountMenu } from "./account-menu";
+import { ResponsiveBrandLogo } from "./brand-logo";
 
 export function SiteHeader() {
   const { t } = useTranslation();
@@ -17,8 +18,8 @@ export function SiteHeader() {
     <header className="surface sticky top-4 z-40 px-4 py-3 sm:px-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link className="text-xl font-bold text-slate-900" href={ROUTES.HOME}>
-            Tenrio
+          <Link href={ROUTES.HOME}>
+            <ResponsiveBrandLogo />
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
             <Link className="text-slate-600 hover:text-slate-900" href="#">

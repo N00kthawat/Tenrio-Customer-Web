@@ -14,7 +14,7 @@ const ibmPlexSansThai = IBM_Plex_Sans_Thai({
 });
 
 export const metadata: Metadata = {
-  title: "Tenrio Customer Web",
+  title: "Tenrio",
   description: "Initial customer web skeleton for Tenrio.",
 };
 
