@@ -1,4 +1,4 @@
-import { ResetPasswordClient } from "./client";
+import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 
 export default async function ResetPasswordPage({ 
   searchParams 
@@ -8,5 +8,5 @@ export default async function ResetPasswordPage({
   const resolvedParams = await searchParams;
   const token = typeof resolvedParams.token === "string" ? resolvedParams.token : undefined;
 
-  return <ResetPasswordClient token={token} />;
+  return <ResetPasswordForm token={token} />;
 }

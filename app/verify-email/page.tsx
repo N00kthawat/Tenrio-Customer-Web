@@ -1,4 +1,4 @@
-import { VerifyEmailClient } from "./client";
+import { VerifyEmailView } from "@/features/auth/components/verify-email-view";
 
 export default async function VerifyEmailPage({ 
   searchParams 
@@ -8,5 +8,5 @@ export default async function VerifyEmailPage({
   const resolvedParams = await searchParams;
   const token = typeof resolvedParams.token === "string" ? resolvedParams.token : undefined;
 
-  return <VerifyEmailClient token={token} />;
+  return <VerifyEmailView token={token} />;
 }
