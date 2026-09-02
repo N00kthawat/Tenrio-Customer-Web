@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { AuthService } from "@/services/auth/auth.service";
 import { registerSchema } from "../auth.schema";
+import { useTranslation } from "@/lib/i18n/I18nProvider";
 
 export function useRegister() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,8 +21,8 @@ export function useRegister() {
     if (!parseResult.success) {
       const formatted = parseResult.error.format();
       setFieldErrors({
-        email: formatted.email?._errors[0],
-        password: formatted.password?._errors[0],
+        email: formatted.email?._errors[0] ? t(formatted.email._errors[0]) : undefined,
+        password: formatted.password?._errors[0] ? t(formatted.password._errors[0]) : undefined,
       });
       return;
     }
@@ -29,13 +31,9 @@ export function useRegister() {
     try {
       await AuthService.register({ email, password });
       setIsSuccess(true);
-    } catch (err: unknown) {
+    } catch {
       setIsLoading(false);
-      if (err instanceof Error) {
-        setError(err.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองใหม่อีกครั้ง");
-      } else {
-        setError("เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองใหม่อีกครั้ง");
-      }
+      setError(t("auth.errors.registerError"));
     }
   };
 

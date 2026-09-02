@@ -7,8 +7,13 @@ import { Button, buttonClasses } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FormError } from "@/components/ui/form-error";
 import { useResetPassword } from "../hooks/use-reset-password";
+import { useTranslation } from "@/lib/i18n/I18nProvider";
+import { ROUTES } from "@/config/routes";
+
+import { AuthShell } from "./auth-shell";
 
 export function ResetPasswordForm({ token }: { token?: string }) {
+  const { t } = useTranslation();
   const { 
     password, setPassword, 
     confirmPassword, setConfirmPassword, 
@@ -18,52 +23,48 @@ export function ResetPasswordForm({ token }: { token?: string }) {
 
   if (!token) {
     return (
-      <div className="mx-auto max-w-md p-6 sm:p-8 bg-white border border-slate-200 rounded-lg shadow-sm mt-12 text-center">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-4">ลิงก์ไม่ถูกต้อง</h1>
+      <AuthShell title={t("auth.reset.invalidTitle")} centerHeader>
         <Alert variant="error" className="text-left mb-6">
-          ไม่พบรหัสอ้างอิงในลิงก์ โปรดตรวจสอบลิงก์จากอีเมลของคุณอีกครั้ง
+          {t("auth.reset.invalidAlert")}
         </Alert>
-        <Link href="/forgot-password" className={buttonClasses({ fullWidth: true })}>
-          ขอลิงก์ตั้งรหัสผ่านใหม่
+        <Link href={ROUTES.AUTH.FORGOT_PASSWORD} className={buttonClasses({ fullWidth: true })}>
+          {t("auth.reset.requestNew")}
         </Link>
-      </div>
+      </AuthShell>
     );
   }
 
   if (isSuccess) {
     return (
-      <div className="mx-auto max-w-md p-6 sm:p-8 bg-white border border-slate-200 rounded-lg shadow-sm mt-12 text-center">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-4">ตั้งรหัสผ่านใหม่สำเร็จ</h1>
+      <AuthShell title={t("auth.reset.successTitle")} centerHeader>
         <Alert variant="success" className="text-left mb-6">
-          รหัสผ่านของคุณถูกเปลี่ยนเรียบร้อยแล้ว
+          {t("auth.reset.successAlert")}
         </Alert>
         <p className="text-sm text-slate-600 mb-6 leading-relaxed text-left">
-          คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่เพื่อจัดการ Microsoft 365
+          {t("auth.reset.successDesc")}
         </p>
-        <Link href="/login" className={buttonClasses({ fullWidth: true })}>
-          ไปหน้าเข้าสู่ระบบ
+        <Link href={ROUTES.AUTH.LOGIN} className={buttonClasses({ fullWidth: true })}>
+          {t("auth.reset.backToLogin")}
         </Link>
-      </div>
+      </AuthShell>
     );
   }
 
   return (
-    <div className="mx-auto max-w-md p-6 sm:p-8 bg-white border border-slate-200 rounded-lg shadow-sm mt-12">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-2">ตั้งรหัสผ่านใหม่</h1>
-        <p className="text-sm text-slate-600">กรุณากำหนดรหัสผ่านใหม่สำหรับบัญชีของคุณ</p>
-      </div>
-
+    <AuthShell 
+      title={t("auth.reset.title")} 
+      description={t("auth.reset.desc")}
+    >
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         {error && <Alert variant="error">{error}</Alert>}
 
         <div className="space-y-1.5">
-          <Label htmlFor="password">รหัสผ่านใหม่</Label>
+          <Label htmlFor="password">{t("auth.reset.password")}</Label>
           <Input
             id="password"
             name="password"
             type="password"
-            placeholder="อย่างน้อย 12 ตัวอักษร"
+            placeholder={t("auth.reset.passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
@@ -74,12 +75,12 @@ export function ResetPasswordForm({ token }: { token?: string }) {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="confirmPassword">ยืนยันรหัสผ่านใหม่</Label>
+          <Label htmlFor="confirmPassword">{t("auth.reset.confirm")}</Label>
           <Input
             id="confirmPassword"
             name="confirmPassword"
             type="password"
-            placeholder="กรอกรหัสผ่านอีกครั้ง"
+            placeholder={t("auth.reset.confirmPlaceholder")}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             disabled={isLoading}
@@ -90,9 +91,9 @@ export function ResetPasswordForm({ token }: { token?: string }) {
         </div>
 
         <Button type="submit" disabled={isLoading} fullWidth className="mt-2">
-          {isLoading ? 'กำลังบันทึก...' : 'บันทึกรหัสผ่านใหม่'}
+          {isLoading ? t("auth.reset.submitting") : t("auth.reset.submit")}
         </Button>
       </form>
-    </div>
+    </AuthShell>
   );
 }

@@ -1,36 +1,42 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { InfoCard } from "@/components/info-card";
+import { buttonClasses } from "@/components/ui/button";
+import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
+import { ROUTES } from "@/config/routes";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const cookieStore = await cookies();
+  const locale = (cookieStore.get("NEXT_LOCALE")?.value || "th") as Locale;
+  const t = await getDictionary(locale);
+
   return (
     <div className="space-y-8">
       <section className="surface overflow-hidden p-8 sm:p-12">
         <div className="grid gap-10 lg:grid-cols-[1.3fr_0.7fr]">
           <div className="space-y-6">
-            <p className="eyebrow">Customer Web MVP</p>
+            <p className="eyebrow">{t.home.eyebrow1}</p>
             <div className="space-y-4">
-              <h1 className="page-title">A clear starting point for buying and managing Microsoft 365.</h1>
+              <h1 className="page-title">{t.home.title}</h1>
               <p className="muted-copy max-w-2xl">
-                This initial skeleton focuses on route structure and presentation only. Pricing,
-                authentication, payment, and subscription state will come from the Backend API
-                in later tasks.
+                {t.home.desc}
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Link className="primary-button" href="/pricing">
-                Explore pricing
+              <Link className={buttonClasses({ variant: "primary" })} href={ROUTES.MARKETING.PRICING}>
+                {t.home.btnPricing}
               </Link>
-              <Link className="secondary-button" href="/register">
-                Create account
+              <Link className={buttonClasses({ variant: "secondary" })} href={ROUTES.AUTH.REGISTER}>
+                {t.home.btnRegister}
               </Link>
             </div>
           </div>
-          <div className="surface bg-cream p-6">
-            <p className="eyebrow">What this includes</p>
+          <div className="surface bg-slate-50 p-6">
+            <p className="eyebrow">{t.home.eyebrow2}</p>
             <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-              <li>App Router pages for public entry points and the initial dashboard.</li>
-              <li>Strict TypeScript configuration and Tailwind-based styling.</li>
-              <li>Static content only, with no backend or payment coupling.</li>
+              <li>{t.home.point1}</li>
+              <li>{t.home.point2}</li>
+              <li>{t.home.point3}</li>
             </ul>
           </div>
         </div>
@@ -38,16 +44,16 @@ export default function HomePage() {
 
       <section className="grid gap-5 md:grid-cols-3">
         <InfoCard
-          title="Simple product discovery"
-          description="The `/pricing` route introduces Business Basic and Business Standard in plain business language."
+          title={t.home.card1Title}
+          description={t.home.card1Desc}
         />
         <InfoCard
-          title="Authentication placeholders"
-          description="The `/login` and `/register` routes are intentionally UI-only while backend auth is still undefined."
+          title={t.home.card2Title}
+          description={t.home.card2Desc}
         />
         <InfoCard
-          title="Dashboard scaffold"
-          description="The `/dashboard` route gives us a shell for future orders, subscriptions, billing, and support sections."
+          title={t.home.card3Title}
+          description={t.home.card3Desc}
         />
       </section>
     </div>

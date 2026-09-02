@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthService } from "@/services/auth/auth.service";
 import { loginSchema } from "../auth.schema";
+import { useTranslation } from "@/lib/i18n/I18nProvider";
+import { ROUTES } from "@/config/routes";
 
 export function useLogin() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,8 +23,8 @@ export function useLogin() {
     if (!parseResult.success) {
       const formatted = parseResult.error.format();
       setFieldErrors({
-        email: formatted.email?._errors[0],
-        password: formatted.password?._errors[0],
+        email: formatted.email?._errors[0] ? t(formatted.email._errors[0]) : undefined,
+        password: formatted.password?._errors[0] ? t(formatted.password._errors[0]) : undefined,
       });
       return;
     }
@@ -30,21 +33,21 @@ export function useLogin() {
     try {
       await AuthService.login({ email, password });
       await AuthService.getCurrentUser();
-      router.push("/dashboard");
+      router.push(ROUTES.DASHBOARD.HOME);
     } catch (err: unknown) {
       setIsLoading(false);
       if (err instanceof Error) {
         if (err.message === "unverified") {
-          setError("บัญชีนี้ยังไม่ได้รับการยืนยัน โปรดตรวจสอบอีเมลของคุณเพื่อยืนยันตัวตนก่อนเข้าสู่ระบบ");
+          setError(t("auth.errors.unverified"));
         } else if (err.message === "invalid") {
-          setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดลองใหม่อีกครั้ง");
+          setError(t("auth.errors.invalid"));
         } else if (err.message === "session_failed") {
-          setError("ไม่สามารถยืนยันเซสชันได้ โปรดเข้าสู่ระบบใหม่อีกครั้ง");
+          setError(t("auth.errors.sessionFailed"));
         } else {
-          setError("เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองใหม่อีกครั้ง");
+          setError(t("auth.errors.network"));
         }
       } else {
-        setError("เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองใหม่อีกครั้ง");
+        setError(t("auth.errors.network"));
       }
     }
   };

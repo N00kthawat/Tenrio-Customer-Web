@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { AuthService } from "@/services/auth/auth.service";
 import { forgotPasswordSchema } from "../auth.schema";
+import { useTranslation } from "@/lib/i18n/I18nProvider";
 
 export function useForgotPassword() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,7 +20,7 @@ export function useForgotPassword() {
     if (!parseResult.success) {
       const formatted = parseResult.error.format();
       setFieldErrors({
-        email: formatted.email?._errors[0],
+        email: formatted.email?._errors[0] ? t(formatted.email._errors[0]) : undefined,
       });
       return;
     }
@@ -29,7 +31,7 @@ export function useForgotPassword() {
       setIsSuccess(true);
     } catch {
       setIsLoading(false);
-      setError("ไม่สามารถติดต่อระบบได้ในขณะนี้ โปรดลองใหม่อีกครั้งในภายหลัง");
+      setError(t("auth.errors.unavailable"));
     }
   };
 

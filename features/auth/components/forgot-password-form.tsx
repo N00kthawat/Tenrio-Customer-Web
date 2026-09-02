@@ -7,45 +7,53 @@ import { Button, buttonClasses } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FormError } from "@/components/ui/form-error";
 import { useForgotPassword } from "../hooks/use-forgot-password";
+import { useTranslation } from "@/lib/i18n/I18nProvider";
+import { ROUTES } from "@/config/routes";
+
+import { AuthShell } from "./auth-shell";
 
 export function ForgotPasswordForm() {
+  const { t } = useTranslation();
   const { email, setEmail, isLoading, error, isSuccess, fieldErrors, handleSubmit } = useForgotPassword();
 
   if (isSuccess) {
     return (
-      <div className="mx-auto max-w-md p-6 sm:p-8 bg-white border border-slate-200 rounded-lg shadow-sm mt-12 text-center">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-4">ตรวจสอบอีเมลของคุณ</h1>
+      <AuthShell title={t("auth.forgot.successTitle")} centerHeader>
         <Alert variant="success" className="text-left mb-6">
-          หากอีเมลนี้มีอยู่ในระบบ เราได้ส่งลิงก์สำหรับตั้งรหัสผ่านใหม่ไปให้คุณแล้ว
+          {t("auth.forgot.successAlert")}
         </Alert>
-        <p className="text-sm text-slate-600 mb-6 leading-relaxed text-left">
-          โปรดตรวจสอบกล่องจดหมายของคุณและคลิกลิงก์เพื่อตั้งรหัสผ่านใหม่ ลิงก์นี้จะหมดอายุภายใน 1 ชั่วโมง<br/><br/>
-          หากไม่พบอีเมล โปรดตรวจสอบในโฟลเดอร์จดหมายขยะ (Spam)
+        <p className="text-sm text-slate-600 mb-6 leading-relaxed text-left whitespace-pre-line">
+          {t("auth.forgot.successDesc")}
         </p>
-        <Link href="/login" className={buttonClasses({ fullWidth: true })}>
-          กลับไปหน้าเข้าสู่ระบบ
+        <Link href={ROUTES.AUTH.LOGIN} className={buttonClasses({ fullWidth: true })}>
+          {t("auth.forgot.backToLogin")}
         </Link>
-      </div>
+      </AuthShell>
     );
   }
 
-  return (
-    <div className="mx-auto max-w-md p-6 sm:p-8 bg-white border border-slate-200 rounded-lg shadow-sm mt-12">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-2">ลืมรหัสผ่าน</h1>
-        <p className="text-sm text-slate-600">กรอกอีเมลของคุณเพื่อรับลิงก์สำหรับตั้งรหัสผ่านใหม่</p>
-      </div>
+  const footer = (
+    <Link href={ROUTES.AUTH.LOGIN} className="font-medium text-blue-600 hover:text-blue-700">
+      {t("auth.forgot.backToLogin")}
+    </Link>
+  );
 
+  return (
+    <AuthShell 
+      title={t("auth.forgot.title")} 
+      description={t("auth.forgot.desc")}
+      footer={footer}
+    >
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         {error && <Alert variant="error">{error}</Alert>}
 
         <div className="space-y-1.5">
-          <Label htmlFor="email">อีเมล</Label>
+          <Label htmlFor="email">{t("auth.forgot.email")}</Label>
           <Input
             id="email"
             name="email"
             type="email"
-            placeholder="name@company.com"
+            placeholder={t("auth.forgot.emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
@@ -56,15 +64,9 @@ export function ForgotPasswordForm() {
         </div>
 
         <Button type="submit" disabled={isLoading} fullWidth className="mt-2">
-          {isLoading ? 'กำลังส่งคำขอ...' : 'ส่งลิงก์ตั้งรหัสผ่านใหม่'}
+          {isLoading ? t("auth.forgot.submitting") : t("auth.forgot.submit")}
         </Button>
       </form>
-      
-      <div className="mt-6 text-center text-sm text-slate-600">
-        <Link href="/login" className="font-medium text-blue-600 hover:text-blue-700">
-          กลับไปหน้าเข้าสู่ระบบ
-        </Link>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

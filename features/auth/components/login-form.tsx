@@ -7,8 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FormError } from "@/components/ui/form-error";
 import { useLogin } from "../hooks/use-login";
+import { useTranslation } from "@/lib/i18n/I18nProvider";
+import { ROUTES } from "@/config/routes";
+
+import { AuthShell } from "./auth-shell";
 
 export function LoginForm() {
+  const { t } = useTranslation();
   const { 
     email, setEmail, 
     password, setPassword, 
@@ -16,23 +21,31 @@ export function LoginForm() {
     handleSubmit 
   } = useLogin();
 
-  return (
-    <div className="mx-auto max-w-md p-6 sm:p-8 bg-white border border-slate-200 rounded-lg shadow-sm mt-12">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-2">เข้าสู่ระบบ Tenrio</h1>
-        <p className="text-sm text-slate-600">จัดการ Microsoft 365 สำหรับธุรกิจของคุณ</p>
-      </div>
+  const footer = (
+    <>
+      {t("auth.login.noAccount")}{' '}
+      <Link href={ROUTES.AUTH.REGISTER} className="font-medium text-blue-600 hover:text-blue-700">
+        {t("auth.login.registerLink")}
+      </Link>
+    </>
+  );
 
+  return (
+    <AuthShell 
+      title={t("auth.login.title")} 
+      description={t("auth.login.desc")}
+      footer={footer}
+    >
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         {error && <Alert variant="error">{error}</Alert>}
 
         <div className="space-y-1.5">
-          <Label htmlFor="email">อีเมล</Label>
+          <Label htmlFor="email">{t("auth.login.email")}</Label>
           <Input
             id="email"
             name="email"
             type="email"
-            placeholder="name@company.com"
+            placeholder={t("auth.login.emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
@@ -44,20 +57,20 @@ export function LoginForm() {
 
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">รหัสผ่าน</Label>
+            <Label htmlFor="password">{t("auth.login.password")}</Label>
             <Link 
-              href="/forgot-password" 
+              href={ROUTES.AUTH.FORGOT_PASSWORD} 
               className="text-sm font-medium text-blue-600 hover:text-blue-700"
               tabIndex={-1}
             >
-              ลืมรหัสผ่าน?
+              {t("auth.login.forgotPassword")}
             </Link>
           </div>
           <Input
             id="password"
             name="password"
             type="password"
-            placeholder="••••••••••••"
+            placeholder={t("auth.login.passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
@@ -68,16 +81,9 @@ export function LoginForm() {
         </div>
 
         <Button type="submit" disabled={isLoading} fullWidth className="mt-2">
-          {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
+          {isLoading ? t("auth.login.submitting") : t("auth.login.submit")}
         </Button>
       </form>
-      
-      <div className="mt-6 text-center text-sm text-slate-600">
-        ยังไม่มีบัญชี?{' '}
-        <Link href="/register" className="font-medium text-blue-600 hover:text-blue-700">
-          สร้างบัญชี
-        </Link>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

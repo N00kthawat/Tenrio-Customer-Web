@@ -7,8 +7,13 @@ import { Button, buttonClasses } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { FormError } from "@/components/ui/form-error";
 import { useRegister } from "../hooks/use-register";
+import { useTranslation } from "@/lib/i18n/I18nProvider";
+import { ROUTES } from "@/config/routes";
+
+import { AuthShell } from "./auth-shell";
 
 export function RegisterForm() {
+  const { t } = useTranslation();
   const { 
     email, setEmail, 
     password, setPassword, 
@@ -18,39 +23,45 @@ export function RegisterForm() {
 
   if (isSuccess) {
     return (
-      <div className="mx-auto max-w-md p-6 sm:p-8 bg-white border border-slate-200 rounded-lg shadow-sm mt-12 text-center">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-4">สร้างบัญชีสำเร็จ</h1>
+      <AuthShell title={t("auth.register.successTitle")} centerHeader>
         <Alert variant="success" className="text-left mb-6">
-          เราได้ส่งลิงก์ยืนยันไปยังอีเมลของคุณแล้ว
+          {t("auth.register.successAlert")}
         </Alert>
         <p className="text-sm text-slate-600 mb-6 leading-relaxed text-left">
-          โปรดตรวจสอบกล่องจดหมายของคุณและคลิกลิงก์เพื่อยืนยันอีเมลก่อนเข้าสู่ระบบ
-          หากไม่พบอีเมล โปรดตรวจสอบในโฟลเดอร์จดหมายขยะ (Spam)
+          {t("auth.register.successDesc")}
         </p>
-        <Link href="/login" className={buttonClasses({ fullWidth: true })}>
-          ไปหน้าเข้าสู่ระบบ
+        <Link href={ROUTES.AUTH.LOGIN} className={buttonClasses({ fullWidth: true })}>
+          {t("auth.register.backToLogin")}
         </Link>
-      </div>
+      </AuthShell>
     );
   }
 
-  return (
-    <div className="mx-auto max-w-md p-6 sm:p-8 bg-white border border-slate-200 rounded-lg shadow-sm mt-12">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-2">สร้างบัญชี Tenrio</h1>
-        <p className="text-sm text-slate-600">เริ่มต้นจัดการไลเซนส์สำหรับธุรกิจของคุณ</p>
-      </div>
+  const footer = (
+    <>
+      {t("auth.register.hasAccount")}{' '}
+      <Link href={ROUTES.AUTH.LOGIN} className="font-medium text-blue-600 hover:text-blue-700">
+        {t("auth.register.loginLink")}
+      </Link>
+    </>
+  );
 
+  return (
+    <AuthShell 
+      title={t("auth.register.title")}
+      description={t("auth.register.desc")}
+      footer={footer}
+    >
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         {error && <Alert variant="error">{error}</Alert>}
 
         <div className="space-y-1.5">
-          <Label htmlFor="email">อีเมล</Label>
+          <Label htmlFor="email">{t("auth.register.email")}</Label>
           <Input
             id="email"
             name="email"
             type="email"
-            placeholder="name@company.com"
+            placeholder={t("auth.register.emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
@@ -61,12 +72,12 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="password">รหัสผ่าน</Label>
+          <Label htmlFor="password">{t("auth.register.password")}</Label>
           <Input
             id="password"
             name="password"
             type="password"
-            placeholder="อย่างน้อย 12 ตัวอักษร"
+            placeholder={t("auth.register.passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
@@ -77,16 +88,9 @@ export function RegisterForm() {
         </div>
 
         <Button type="submit" disabled={isLoading} fullWidth className="mt-2">
-          {isLoading ? 'กำลังสร้างบัญชี...' : 'สร้างบัญชี'}
+          {isLoading ? t("auth.register.submitting") : t("auth.register.submit")}
         </Button>
       </form>
-      
-      <div className="mt-6 text-center text-sm text-slate-600">
-        มีบัญชีอยู่แล้ว?{' '}
-        <Link href="/login" className="font-medium text-blue-600 hover:text-blue-700">
-          เข้าสู่ระบบ
-        </Link>
-      </div>
-    </div>
+    </AuthShell>
   );
 }
