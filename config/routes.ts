@@ -1,6 +1,7 @@
 export const ROUTES = {
   HOME: "/",
   MARKETING: {
+    MICROSOFT_365: "/microsoft-365",
     PRICING: "/pricing",
   },
   AUTH: {

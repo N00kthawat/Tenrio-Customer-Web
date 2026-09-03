@@ -231,5 +231,46 @@
       "unresolvedValue": "Stored value \"{{value}}\" not found in dataset",
       "invalidEmail": "Please enter a valid email address"
     }
+  },
+  "catalog": {
+    "microsoft365": {
+      "title": "Microsoft 365",
+      "desc": "Powerful cloud-based productivity apps and services that help you create, connect, and collaborate.",
+      "planPositioning": {
+        "BUSINESS_BASIC": "Suitable for teams that mainly work with Office on the web and mobile.",
+        "BUSINESS_STANDARD": "Suitable for teams that also need desktop Office applications."
+      },
+      "features": {
+        "WEB_MOBILE_OFFICE": {
+          "label": "Web and mobile Office apps",
+          "desc": "Use Word, Excel, and PowerPoint in a web browser or mobile app."
+        },
+        "DESKTOP_OFFICE": {
+          "label": "Desktop Office apps",
+          "desc": "Install full Office applications on your PC or Mac."
+        },
+        "BUSINESS_EMAIL": {
+          "label": "Business email",
+          "desc": "Get a professional email address with a 50GB mailbox."
+        },
+        "ONEDRIVE_1TB": {
+          "label": "1TB cloud storage",
+          "desc": "Store, share, and access files from anywhere with OneDrive."
+        },
+        "TEAMS": {
+          "label": "Microsoft Teams",
+          "desc": "Chat, call, and meet with your team in one place."
+        }
+      },
+      "comparisonTitle": "Compare features",
+      "included": "Included",
+      "notIncluded": "Not included",
+      "empty": "No plans available at the moment. Please check back later.",
+      "errorTitle": "Unable to load plans",
+      "errorDesc": "An error occurred while connecting to the system. Please try again.",
+      "retry": "Try Again",
+      "loading": "Loading plans...",
+      "featuresHeader": "Features"
+    }
   }
 }

@@ -22,7 +22,7 @@ export function SiteHeader() {
             <ResponsiveBrandLogo />
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link className="text-slate-600 hover:text-slate-900" href="#">
+            <Link className="text-slate-600 hover:text-slate-900" href={ROUTES.MARKETING.MICROSOFT_365}>
               Microsoft 365
             </Link>
             {PUBLIC_NAVIGATION.map((link) => (
