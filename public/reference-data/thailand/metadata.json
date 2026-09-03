@@ -1,0 +1,11 @@
+{
+  "dataset": "Thailand Administrative Address Reference",
+  "sourceRepository": "thailand-geography-data/thailand-geography-json",
+  "sourceCommit": "b8b3fb91c7df1129ff5b43cb46f7fcffadd2156b",
+  "sourceCommitDate": "2026-06-23T11:46:56Z",
+  "license": "MIT",
+  "processedDate": "2026-09-03",
+  "provinceCount": 77,
+  "districtCount": 928,
+  "subdistrictCount": 7436
+}
