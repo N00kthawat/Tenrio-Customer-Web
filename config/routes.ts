@@ -13,4 +13,7 @@ export const ROUTES = {
   DASHBOARD: {
     HOME: "/dashboard",
   },
+  ORGANIZATION: {
+    SETUP: "/organization/setup",
+  },
 } as const;

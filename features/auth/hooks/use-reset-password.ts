@@ -31,7 +31,7 @@ export function useResetPassword(token?: string) {
 
     setIsLoading(true);
     try {
-      await AuthService.resetPassword({ token, password });
+      await AuthService.resetPassword({ token, newPassword: password });
       setIsSuccess(true);
     } catch (err: unknown) {
       setIsLoading(false);

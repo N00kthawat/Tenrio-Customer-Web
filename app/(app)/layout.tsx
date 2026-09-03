@@ -1,5 +1,6 @@
 import { AppShell } from "@/components/app-shell";
 import { AuthGuard } from "@/components/auth-guard";
+import { OrganizationGuard } from "@/components/organization-guard";
 
 export default function AppLayout({
   children,
@@ -8,9 +9,11 @@ export default function AppLayout({
 }) {
   return (
     <AuthGuard>
-      <AppShell>
-        {children}
-      </AppShell>
+      <OrganizationGuard>
+        <AppShell>
+          {children}
+        </AppShell>
+      </OrganizationGuard>
     </AuthGuard>
   );
 }
