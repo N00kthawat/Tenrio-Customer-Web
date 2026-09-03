@@ -12,7 +12,7 @@ export const APP_SIDEBAR_NAVIGATION = [
   { href: "#", labelKey: "nav.billing" },
   { href: "#", labelKey: "nav.invoices" },
   { href: "#", labelKey: "nav.support" },
-  { href: "#", labelKey: "nav.settings" },
+  { href: ROUTES.ORGANIZATION.PROFILE, labelKey: "nav.settings" },
 ] as const;
 
 export const APP_HEADER_NAVIGATION = [

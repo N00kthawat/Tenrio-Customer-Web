@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, createContext, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { OrganizationService } from "@/services/organizations/organization.service";
 import { ROUTES } from "@/config/routes";
@@ -8,6 +8,20 @@ import { useTranslation } from "@/lib/i18n/I18nProvider";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/providers/auth-provider";
+
+interface OrganizationContextType {
+  organizationId: string | null;
+}
+
+const OrganizationContext = createContext<OrganizationContextType | undefined>(undefined);
+
+export function useOrganization() {
+  const context = useContext(OrganizationContext);
+  if (context === undefined) {
+    throw new Error("useOrganization must be used within an OrganizationGuard");
+  }
+  return context;
+}
 
 type OrgStatus = 'loading' | 'error' | 'zero' | 'resolved' | 'ambiguous';
 
@@ -20,6 +34,7 @@ export function OrganizationGuard({
 }) {
   const router = useRouter();
   const [status, setStatus] = useState<OrgStatus>('loading');
+  const [organizationId, setOrganizationId] = useState<string | null>(null);
   const { t } = useTranslation();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   
@@ -33,9 +48,14 @@ export function OrganizationGuard({
       
       if (requestCountRef.current !== requestId) return;
       
-      if (orgs.length === 0) setStatus('zero');
-      else if (orgs.length === 1) setStatus('resolved');
-      else setStatus('ambiguous');
+      if (orgs.length === 0) {
+        setStatus('zero');
+      } else if (orgs.length === 1) {
+        setOrganizationId(orgs[0].id);
+        setStatus('resolved');
+      } else {
+        setStatus('ambiguous');
+      }
     } catch {
       if (requestCountRef.current !== requestId) return;
       setStatus('error');
@@ -105,5 +125,9 @@ export function OrganizationGuard({
   if (status === 'zero' && !requireSetup) return null;
   if (status === 'resolved' && requireSetup) return null;
 
-  return <>{children}</>;
+  return (
+    <OrganizationContext.Provider value={{ organizationId }}>
+      {children}
+    </OrganizationContext.Provider>
+  );
 }

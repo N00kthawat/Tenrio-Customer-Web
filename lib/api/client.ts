@@ -6,10 +6,10 @@ export interface RequestOptions extends RequestInit {
 
 export async function fetchApi<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { params, headers, ...restOptions } = options;
-  
+
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   let url = `${baseUrl}${endpoint}`;
-  
+
   if (params) {
     const searchParams = new URLSearchParams(params);
     url += `?${searchParams.toString()}`;
@@ -44,7 +44,7 @@ export async function fetchApi<T>(endpoint: string, options: RequestOptions = {}
     if (!text) {
       return {} as T;
     }
-    
+
     return JSON.parse(text) as T;
   } catch (error) {
     if (error instanceof ApiError) {
@@ -56,12 +56,14 @@ export async function fetchApi<T>(endpoint: string, options: RequestOptions = {}
 }
 
 export const apiClient = {
-  get: <T>(endpoint: string, options?: RequestOptions) => 
+  get: <T>(endpoint: string, options?: RequestOptions) =>
     fetchApi<T>(endpoint, { ...options, method: 'GET' }),
-  post: <T>(endpoint: string, body?: unknown, options?: RequestOptions) => 
+  post: <T>(endpoint: string, body?: unknown, options?: RequestOptions) =>
     fetchApi<T>(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) }),
-  put: <T>(endpoint: string, body?: unknown, options?: RequestOptions) => 
+  put: <T>(endpoint: string, body?: unknown, options?: RequestOptions) =>
     fetchApi<T>(endpoint, { ...options, method: 'PUT', body: JSON.stringify(body) }),
-  delete: <T>(endpoint: string, options?: RequestOptions) => 
+  patch: <T>(endpoint: string, body?: unknown, options?: RequestOptions) =>
+    fetchApi<T>(endpoint, { ...options, method: 'PATCH', body: JSON.stringify(body) }),
+  delete: <T>(endpoint: string, options?: RequestOptions) =>
     fetchApi<T>(endpoint, { ...options, method: 'DELETE' }),
 };

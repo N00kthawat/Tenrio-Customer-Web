@@ -15,5 +15,6 @@ export const ROUTES = {
   },
   ORGANIZATION: {
     SETUP: "/organization/setup",
+    PROFILE: "/organization/profile",
   },
 } as const;
